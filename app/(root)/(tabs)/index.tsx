@@ -29,6 +29,8 @@ export default function Index() {
           <Image source={icons.bell} className="size-6" />
         </View>
       </View>
+
+      <Search />
     </SafeAreaView>
   );
 }

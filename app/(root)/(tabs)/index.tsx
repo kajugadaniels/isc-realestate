@@ -1,3 +1,4 @@
+import { Card, FeaturedCard } from "@/components/Cards";
 import Filters from "@/components/Filters";
 import Search from "@/components/Search";
 import icons from "@/constants/icons";
@@ -43,6 +44,10 @@ export default function Index() {
             </TouchableOpacity>
           </View>
         </View>
+
+        <FeaturedCard />
+
+        <Card />
       </View>
     </SafeAreaView>
   );

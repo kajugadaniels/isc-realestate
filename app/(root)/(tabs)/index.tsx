@@ -52,6 +52,8 @@ export default function Index() {
           <FeaturedCard />
         </View>
 
+        <Filters />
+
         <View className="flex flex-row gap-5 mt-5">
           <Card />
           <Card />

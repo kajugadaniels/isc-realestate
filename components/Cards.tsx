@@ -54,7 +54,34 @@ export const Card = () => {
     <TouchableOpacity
       className="flex flex-col items-start w-60 h-80 relative"
     >
-      <Text>Card</Text>
+      <View className="flex flex-row items-center absolute px-2 top-5 right-5 bg-white/90 p-1 rounded-full z-50">
+        <Image source={icons.star} className="size-2.5" />
+        <Text className="text-xs font-rubik-bold text-primary-300 ml-0.5">
+          4.3
+        </Text>
+      </View>
+
+      <Image source={images.japan} className="w-full h-40 rounded-lg" />
+
+      <View className="flex flex-col mt-2">
+        <Text className="text-base font-rubik-bold text-black-300">
+          Property Name
+        </Text>
+        <Text className="text-xs font-rubik text-black-100">
+          Kigali Rwanda
+        </Text>
+
+        <View className="flex flex-row items-center justify-between mt-2">
+          <Text className="text-base font-rubik-bold text-primary-300">
+            $140
+          </Text>
+          <Image
+            source={icons.heart}
+            className="w-5 h-5 mr-2"
+            tintColor="#191D31"
+          />
+        </View>
+      </View>
     </TouchableOpacity>
   )
 }

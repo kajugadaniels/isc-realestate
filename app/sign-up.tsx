@@ -5,6 +5,7 @@ import {
   Image,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -13,7 +14,7 @@ import { Link, Redirect } from "expo-router";
 import icons from "@/constants/icons";
 import images from "@/constants/images";
 
-const SignIn = () => {
+const SignUp = () => {
 
   return (
     <SafeAreaView className="bg-white h-full">
@@ -22,12 +23,6 @@ const SignIn = () => {
           height: "100%",
         }}
       >
-        <Image
-          source={images.onboarding}
-          className="w-full h-4/6"
-          resizeMode="contain"
-        />
-
         <View className="px-10">
           <Text className="text-base text-center uppercase font-rubik text-black-200">
             Welcome ISC
@@ -41,6 +36,11 @@ const SignIn = () => {
           <TouchableOpacity
             className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5"
           >
+            <TextInput
+              placeholder="Name here"
+              className="flex-1 ml-2 text-white"
+              placeholderTextColor="#A8B5DB"
+            />
             <View className="flex flex-row items-center justify-center">
               <Image
                 source={icons.google}
@@ -54,7 +54,7 @@ const SignIn = () => {
           </TouchableOpacity>
 
           <Text className="text-lg font-rubik text-black-200 text-center mt-12">
-            Don't have an account? <Link href="/sign-up" className="text-primary-300 font-bold font-rubik-bold">Sign Up</Link>
+            Already have an account? <Link href="/sign-in" className="text-primary-300 font-bold font-rubik-bold">Sign In</Link>
           </Text>
         </View>
       </ScrollView>
@@ -62,4 +62,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;

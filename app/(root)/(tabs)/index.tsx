@@ -45,9 +45,19 @@ export default function Index() {
           </View>
         </View>
 
-        <FeaturedCard />
+        <View className="flex flex-row gap-5 mt-5">
+          <FeaturedCard />
+          <FeaturedCard />
+          <FeaturedCard />
+          <FeaturedCard />
+        </View>
 
-        <Card />
+        <View className="flex flex-row gap-5 mt-5">
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+        </View>
       </View>
     </SafeAreaView>
   );

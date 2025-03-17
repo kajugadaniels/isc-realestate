@@ -54,7 +54,7 @@ const SignUp = () => {
               onChangeText={setName}
               placeholder="Enter your full name"
               placeholderTextColor="#A8B5DB"
-              className="border border-gray-300 rounded-lg p-3"
+              className="border border-gray-300 py-5 px-5 rounded-full"
             />
           </View>
 
@@ -68,7 +68,7 @@ const SignUp = () => {
               placeholderTextColor="#A8B5DB"
               keyboardType="email-address"
               autoCapitalize="none"
-              className="border border-gray-300 rounded-lg p-3"
+              className="border border-gray-300 py-5 px-5 rounded-full"
             />
           </View>
 
@@ -81,7 +81,7 @@ const SignUp = () => {
               placeholder="Enter your phone number"
               placeholderTextColor="#A8B5DB"
               keyboardType="phone-pad"
-              className="border border-gray-300 rounded-lg p-3"
+              className="border border-gray-300 py-5 px-5 rounded-full"
             />
           </View>
 
@@ -94,7 +94,7 @@ const SignUp = () => {
               placeholder="Enter your password"
               placeholderTextColor="#A8B5DB"
               secureTextEntry
-              className="border border-gray-300 rounded-lg p-3"
+              className="border border-gray-300 py-5 px-5 rounded-full"
             />
           </View>
 
@@ -107,7 +107,7 @@ const SignUp = () => {
               placeholder="Confirm your password"
               placeholderTextColor="#A8B5DB"
               secureTextEntry
-              className="border border-gray-300 rounded-lg p-3"
+              className="border border-gray-300 py-5 px-5 rounded-full"
             />
           </View>
 
@@ -118,23 +118,6 @@ const SignUp = () => {
           >
             <Text className="text-white text-center text-lg font-rubik-bold">
               Sign Up
-            </Text>
-          </TouchableOpacity>
-
-          {/* Google Sign-In Button */}
-          <TouchableOpacity
-            onPress={() => {
-              // Add your Google login logic here
-            }}
-            className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5 flex-row items-center justify-center"
-          >
-            <Image
-              source={icons.google}
-              className="w-5 h-5"
-              resizeMode="contain"
-            />
-            <Text className="text-lg font-rubik-medium text-black-300 ml-2">
-              Continue with Google
             </Text>
           </TouchableOpacity>
 

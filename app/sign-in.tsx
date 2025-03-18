@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, Redirect } from "expo-router"; // Import Redirect
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import icons from "@/constants/icons";
@@ -18,7 +18,8 @@ import images from "@/constants/images";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); // To show loading indicator
+  const [loading, setLoading] = useState(false);
+  const [redirect, setRedirect] = useState(false); // State for redirect
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -27,7 +28,7 @@ const SignIn = () => {
     }
 
     try {
-      setLoading(true); // Start loading
+      setLoading(true);
 
       // Sending the login request to the backend API
       const response = await axios.post(
@@ -40,29 +41,29 @@ const SignIn = () => {
 
       // Handle successful login
       const { access, refresh } = response.data;
-      await AsyncStorage.setItem("access_token", access); // Store the access token
-      await AsyncStorage.setItem("refresh_token", refresh); // Store the refresh token
+      await AsyncStorage.setItem("access_token", access);
+      await AsyncStorage.setItem("refresh_token", refresh);
 
-      // Show success message
       Alert.alert("Success", "Signed in successfully!");
 
-      // Optionally, navigate to the home or another screen after successful login
-      // navigation.navigate("Home"); // If you're using React Navigation
-
+      // Set redirect state to true so the component redirects to "/"
+      setRedirect(true);
     } catch (error) {
-      setLoading(false); // Stop loading
+      setLoading(false);
       if (error.response) {
-        // Handle server-side errors
         Alert.alert("Error", error.response.data.detail || "An error occurred.");
       } else if (error.request) {
-        // Handle network errors
         Alert.alert("Error", "Network error. Please try again.");
       } else {
-        // Handle other errors
         Alert.alert("Error", "Something went wrong. Please try again.");
       }
     }
   };
+
+  // Conditionally render Redirect when redirect state is true
+  if (redirect) {
+    return <Redirect href="/" />;
+  }
 
   return (
     <SafeAreaView className="h-full bg-white">
@@ -108,7 +109,7 @@ const SignIn = () => {
           <TouchableOpacity
             onPress={handleSignIn}
             className="py-4 mt-8 rounded-full bg-primary-300"
-            disabled={loading} // Disable button while loading
+            disabled={loading}
           >
             <Text className="text-lg text-center text-white font-rubik-bold">
               {loading ? "Signing In..." : "Sign In"}

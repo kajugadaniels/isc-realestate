@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { SafeAreaView, Platform } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Alert,
+  Image,
   ScrollView,
   Text,
   TextInput,
@@ -20,20 +21,20 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const [redirect, setRedirect] = useState(false);
 
-  // Function to store tokens in both AsyncStorage and localStorage (if on web)
-  const storeTokens = async (access: string, refresh: string) => {
+  // Helper function to save tokens in both AsyncStorage (mobile) and localStorage (web)
+  const saveTokens = async (accessToken: string, refreshToken: string) => {
     try {
-      // Store tokens in AsyncStorage (works on all platforms)
-      await AsyncStorage.setItem("access_token", access);
-      await AsyncStorage.setItem("refresh_token", refresh);
+      // Store tokens using AsyncStorage (for mobile)
+      await AsyncStorage.setItem("access_token", accessToken);
+      await AsyncStorage.setItem("refresh_token", refreshToken);
 
-      // If running in a web environment, also store tokens in localStorage
-      if (Platform.OS === "web") {
-        localStorage.setItem("access_token", access);
-        localStorage.setItem("refresh_token", refresh);
+      // Also store tokens using localStorage if running in a web environment
+      if (typeof window !== "undefined" && window.localStorage) {
+        window.localStorage.setItem("access_token", accessToken);
+        window.localStorage.setItem("refresh_token", refreshToken);
       }
     } catch (error) {
-      console.error("Error storing tokens", error);
+      console.error("Error saving tokens:", error);
     }
   };
 
@@ -45,7 +46,7 @@ const SignIn = () => {
 
     try {
       setLoading(true);
-
+      // Send login request to your backend API
       const response = await axios.post(
         "https://intelligent-accessible-housing.onrender.com/api/login/",
         {
@@ -54,16 +55,15 @@ const SignIn = () => {
         }
       );
 
+      // Retrieve tokens from the response
       const { access, refresh } = response.data;
 
-      // Store tokens using our helper function
-      await storeTokens(access, refresh);
+      // Save tokens locally (mobile and web)
+      await saveTokens(access, refresh);
 
       Alert.alert("Success", "Signed in successfully!");
-
-      // Trigger redirect after successful login
       setRedirect(true);
-    } catch (error: any) {
+    } catch (error) {
       setLoading(false);
       if (error.response) {
         Alert.alert("Error", error.response.data.detail || "An error occurred.");
@@ -75,6 +75,7 @@ const SignIn = () => {
     }
   };
 
+  // Redirect the user to the home screen if the sign-in was successful
   if (redirect) {
     return <Redirect href="/" />;
   }
@@ -119,7 +120,7 @@ const SignIn = () => {
             />
           </View>
 
-          {/* Sign In Button */}
+          {/* Email/Password Sign In Button */}
           <TouchableOpacity
             onPress={handleSignIn}
             className="py-4 mt-8 rounded-full bg-primary-300"

@@ -67,3 +67,24 @@ export const clearTokens = async () => {
     console.error("Error clearing tokens:", error);
   }
 };
+
+// **New function to get current user details**
+export const getCurrentUser = async () => {
+  try {
+    const { accessToken } = await getStoredTokens();
+    if (!accessToken) {
+      throw new Error("No access token found. Please log in.");
+    }
+
+    const response = await axios.get(`${BASE_URL}/current_user/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data; // Assuming this returns user data like { id, name, email, avatar }
+  } catch (error: any) {
+    console.error("Error fetching current user data:", error);
+    throw new Error(error.message || "Failed to fetch user data.");
+  }
+};

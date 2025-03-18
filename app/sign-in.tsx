@@ -1,27 +1,35 @@
 import React, { useState } from "react";
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
-import { Link } from "expo-router";
-import { loginUser } from "@/services/api";
-import { toast } from "react-toastify";
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View, ScrollView, Alert } from "react-native";
+import { Link, Redirect, useRouter } from "expo-router";  // Use router to handle navigation
+import { loginUser } from "@/services/api";  // Import the loginUser function from services/api
+import { useGlobalContext } from "@/lib/global-provider";  // To check if user is logged in
 
 const SignIn = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { refetch, loading, isLogged } = useGlobalContext();  // To check if the user is already logged in
+  const router = useRouter();  // To navigate to the next page (index.tsx)
+
+  // If the user is already logged in, redirect them to the home page
+  if (!loading && isLogged) {
+    <Redirect href="/" />  // Navigate to the home page
+  }
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      toast.error("Please fill out both email and password.");
+      Alert.alert("Error", "Please fill out both email and password.");
       return;
     }
 
     // Call login API
     const { success } = await loginUser(email, password);
     if (success) {
-      toast.success("Signed in successfully!");
-      // Optionally navigate to the next screen after successful login
-      // e.g., navigation.navigate('Home');
+      // Refetch user data after successful login
+      refetch();
+      Alert.alert("Success", "Signed in successfully!");
+      <Redirect href="/" />  // Redirect to index.tsx after successful login
     } else {
-      toast.error("Failed to sign in.");
+      Alert.alert("Error", "Failed to sign in.");
     }
   };
 

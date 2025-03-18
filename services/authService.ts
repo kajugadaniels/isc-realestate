@@ -1,39 +1,31 @@
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Backend URL
-const API_URL = "https://intelligent-accessible-housing.onrender.com/api/";
+// URL for your backend API
+const API_URL = "https://intelligent-accessible-housing.onrender.com/api/login/";
 
-// ** Login function for API call
-export const loginUser = async (email: string, password: string) => {
+// Function for user login
+export const loginUser = async (identifier: string, password: string) => {
   try {
-    const response = await axios.post(`${API_URL}login/`, {
-      identifier: email,
-      password: password,
+    // Send login request to backend
+    const response = await axios.post(API_URL, {
+      identifier,
+      password,
     });
 
-    // Destructure the access and refresh tokens from the response
     const { access, refresh } = response.data;
 
-    // Save tokens in AsyncStorage
-    await AsyncStorage.setItem('access_token', access);
-    await AsyncStorage.setItem('refresh_token', refresh);
+    // Save the tokens to AsyncStorage
+    await AsyncStorage.setItem("access_token", access);
+    await AsyncStorage.setItem("refresh_token", refresh);
 
-    return { success: true, access, refresh };
+    // Return success response
+    return { success: true, message: "Login successful" };
   } catch (error) {
-    let errorMessage = "Something went wrong. Please try again.";
+    // Handle errors and return error message
     if (error.response) {
-      // Server-side error
-      errorMessage = error.response.data.detail || errorMessage;
+      return { success: false, message: error.response.data.detail || "An error occurred." };
     }
-    // Show error message via Toast
-    Toast.show({
-      type: 'error',
-      text1: 'Error',
-      text2: errorMessage,
-    });
-    return { success: false, message: errorMessage };
+    return { success: false, message: "Network error. Please try again." };
   }
 };
-

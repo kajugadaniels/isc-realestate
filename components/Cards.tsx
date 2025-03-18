@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import images from '@/constants/images'
 import icons from '@/constants/icons'
+import { Link } from 'expo-router'
 
 interface Props {
   onPress?: () => void
@@ -28,12 +29,14 @@ export const FeaturedCard = ({ onPress }: Props) => {
       </View>
 
       <View className="flex flex-col items-start absolute bottom-5 inset-x-5">
-        <Text
-          className="text-xl font-rubik-extrabold text-white"
-          numberOfLines={1}
-        >
-          Property Name
-        </Text>
+        <Link href="/properties/1">
+          <Text
+            className="text-xl font-rubik-extrabold text-white"
+            numberOfLines={1}
+          >
+            Property Name
+          </Text>
+        </Link>
         <Text className="text-base font-rubik text-white" numberOfLines={1}>
           Kigali Rwanda
         </Text>
@@ -64,9 +67,11 @@ export const Card = () => {
       <Image source={images.japan} className="w-full h-40 rounded-lg" />
 
       <View className="flex flex-col mt-2">
-        <Text className="text-base font-rubik-bold text-black-300">
-          Property Name
-        </Text>
+        <Link href="/properties/1">
+          <Text className="text-base font-rubik-bold text-black-300">
+            Property Name
+          </Text>
+        </Link>
         <Text className="text-xs font-rubik text-black-100">
           Kigali Rwanda
         </Text>

@@ -16,10 +16,10 @@ import icons from "@/constants/icons";
 import images from "@/constants/images";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [redirect, setRedirect] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [redirect, setRedirect] = useState<boolean>(false);
 
   // Helper function to save tokens in both AsyncStorage (mobile) and localStorage (web)
   const saveTokens = async (accessToken: string, refreshToken: string) => {
@@ -46,7 +46,7 @@ const SignIn = () => {
 
     try {
       setLoading(true);
-      // Send login request to your backend API
+      // Sending the login request to the backend API
       const response = await axios.post(
         "https://intelligent-accessible-housing.onrender.com/api/login/",
         {
@@ -55,27 +55,32 @@ const SignIn = () => {
         }
       );
 
-      // Retrieve tokens from the response
+      // Handle successful login
       const { access, refresh } = response.data;
-
-      // Save tokens locally (mobile and web)
       await saveTokens(access, refresh);
 
       Alert.alert("Success", "Signed in successfully!");
       setRedirect(true);
-    } catch (error) {
+    } catch (error: unknown) {
       setLoading(false);
-      if (error.response) {
-        Alert.alert("Error", error.response.data.detail || "An error occurred.");
-      } else if (error.request) {
-        Alert.alert("Error", "Network error. Please try again.");
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          Alert.alert(
+            "Error",
+            ((error.response.data as any)?.detail as string) || "An error occurred."
+          );
+        } else if (error.request) {
+          Alert.alert("Error", "Network error. Please try again.");
+        } else {
+          Alert.alert("Error", "Something went wrong. Please try again.");
+        }
       } else {
-        Alert.alert("Error", "Something went wrong. Please try again.");
+        Alert.alert("Error", "An unexpected error occurred.");
       }
     }
   };
 
-  // Redirect the user to the home screen if the sign-in was successful
+  // Conditionally render Redirect when sign-in is successful
   if (redirect) {
     return <Redirect href="/" />;
   }

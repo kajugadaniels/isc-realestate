@@ -1,41 +1,33 @@
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
 import { Link } from "expo-router";
-import icons from "@/constants/icons";
-import images from "@/constants/images";
+import { loginUser } from "@/services/api";
+import toastr from "react-native-toastr";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please fill out both email and password.");
+      toastr.error("Please fill out both email and password.");
       return;
     }
-    // Add your authentication logic here.
-    Alert.alert("Success", "Signed in successfully!");
+
+    // Call login API
+    const { success } = await loginUser(email, password);
+    if (success) {
+      toastr.success("Signed in successfully!");
+      // Optionally navigate to the next screen after successful login
+      // e.g., navigation.navigate('Home');
+    } else {
+      toastr.error("Failed to sign in.");
+    }
   };
 
   return (
     <SafeAreaView className="h-full bg-white">
-      <ScrollView contentContainerStyle={{ height: "100%" }}>
-
-        {/* <Image
-          source={images.onboarding}
-          className="w-full h-4/6"
-          resizeMode="contain"
-        /> */}
-
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="px-10">
           <Text className="text-base text-center uppercase font-rubik text-black-200 mt-52">
             Welcome ISC
@@ -73,7 +65,7 @@ const SignIn = () => {
             />
           </View>
 
-          {/* Email/Password Sign In Button */}
+          {/* Sign In Button */}
           <TouchableOpacity
             onPress={handleSignIn}
             className="py-4 mt-8 rounded-full bg-primary-300"

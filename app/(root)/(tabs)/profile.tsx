@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
+import { router } from "expo-router"; // Import router for navigation
 
 import icons from "@/constants/icons";
 import { settings } from "@/constants/data";
@@ -45,7 +45,10 @@ const SettingsItem = ({
 );
 
 const Profile = () => {
-  const handleLogout = async () => {};
+  const handleLogout = async () => {
+    // Optionally add any logout logic here (e.g., clearing tokens)
+    router.push("/sign-in");
+  };
 
   return (
     <SafeAreaView className="h-full bg-white">

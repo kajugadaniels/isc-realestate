@@ -1,54 +1,48 @@
 import React, { useState } from "react";
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View, ScrollView, Alert } from "react-native";
-import { Link, Redirect, useRouter } from "expo-router";  // Use router to handle navigation
-import { loginUser } from "@/services/api";  // Import the loginUser function from services/api
-import { useGlobalContext } from "@/lib/global-provider";  // To check if user is logged in
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Link } from "expo-router";
+import icons from "@/constants/icons";
+import images from "@/constants/images";
 
 const SignIn = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const { refetch, loading, isLogged } = useGlobalContext();  // To check if the user is already logged in
-  const router = useRouter();  // To navigate to the next page (index.tsx)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // If the user is already logged in, redirect them to the home page
-  if (!loading && isLogged) {
-    <Redirect href="/" />  // Navigate to the home page
-  }
-
-  const handleSignIn = async () => {
+  const handleSignIn = () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill out both email and password.");
       return;
     }
-
-    // Call login API
-    const { success } = await loginUser(email, password);
-    if (success) {
-      // Refetch user data after successful login
-      refetch();
-      Alert.alert("Success", "Signed in successfully!");
-      <Redirect href="/" />  // Redirect to index.tsx after successful login
-    } else {
-      Alert.alert("Error", "Failed to sign in.");
-    }
+    // Add your authentication logic here.
+    Alert.alert("Success", "Signed in successfully!");
   };
 
   return (
-    <SafeAreaView className="h-full bg-white">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <SafeAreaView className="bg-white h-full">
+      <ScrollView contentContainerStyle={{ height: "100%" }}>
+
         <View className="px-10">
-          <Text className="text-base text-center uppercase font-rubik text-black-200 mt-52">
+          <Text className="text-base text-center uppercase font-rubik text-black-200">
             Welcome ISC
           </Text>
 
-          <Text className="mt-2 text-3xl text-center font-rubik-bold text-black-300">
+          <Text className="text-3xl font-rubik-bold text-black-300 text-center mt-2">
             Let's Get You Closer To {"\n"}
             <Text className="text-primary-300">Your Ideal Home</Text>
           </Text>
 
           {/* Email Field */}
           <View className="mt-4">
-            <Text className="mb-2 text-sm text-black-300">Email</Text>
+            <Text className="text-sm text-black-300 mb-2">Email</Text>
             <TextInput
               value={email}
               onChangeText={setEmail}
@@ -56,38 +50,38 @@ const SignIn = () => {
               placeholderTextColor="#A8B5DB"
               keyboardType="email-address"
               autoCapitalize="none"
-              className="px-5 py-5 border border-gray-300 rounded-full"
+              className="border border-gray-300 py-5 px-5 rounded-full"
             />
           </View>
 
           {/* Password Field */}
           <View className="mt-4">
-            <Text className="mb-2 text-sm text-black-300">Password</Text>
+            <Text className="text-sm text-black-300 mb-2">Password</Text>
             <TextInput
               value={password}
               onChangeText={setPassword}
               placeholder="Enter your password"
               placeholderTextColor="#A8B5DB"
               secureTextEntry
-              className="px-5 py-5 border border-gray-300 rounded-full"
+              className="border border-gray-300 py-5 px-5 rounded-full"
             />
           </View>
 
-          {/* Sign In Button */}
+          {/* Email/Password Sign In Button */}
           <TouchableOpacity
             onPress={handleSignIn}
-            className="py-4 mt-8 rounded-full bg-primary-300"
+            className="bg-primary-300 rounded-full py-4 mt-8"
           >
-            <Text className="text-lg text-center text-white font-rubik-bold">
+            <Text className="text-white text-center text-lg font-rubik-bold">
               Sign In
             </Text>
           </TouchableOpacity>
 
-          <Text className="mt-12 text-lg text-center font-rubik text-black-200">
+          <Text className="text-lg font-rubik text-black-200 text-center mt-12">
             Don't have an account?{" "}
             <Link
               href="/sign-up"
-              className="font-bold text-primary-300 font-rubik-bold"
+              className="text-primary-300 font-bold font-rubik-bold"
             >
               Sign Up
             </Link>

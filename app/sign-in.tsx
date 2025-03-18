@@ -1,19 +1,8 @@
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
 import { Link } from "expo-router";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import icons from "@/constants/icons";
-import images from "@/constants/images";
+import Toast from 'react-native-toast-message';
+import { loginUser } from "@/services/authService";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -26,42 +15,22 @@ const SignIn = () => {
       return;
     }
 
-    try {
-      setLoading(true); // Start loading
+    setLoading(true); // Show the loading state
 
-      // Sending the login request to the backend API
-      const response = await axios.post(
-        "https://intelligent-accessible-housing.onrender.com/api/login/",
-        {
-          identifier: email,
-          password: password,
-        }
-      );
+    const result = await loginUser(email, password); // Call the login service
 
-      // Handle successful login
-      const { access, refresh } = response.data;
-      await AsyncStorage.setItem("access_token", access); // Store the access token
-      await AsyncStorage.setItem("refresh_token", refresh); // Store the refresh token
-
-      // Show success message
-      Alert.alert("Success", "Signed in successfully!");
-
-      // Optionally, navigate to the home or another screen after successful login
-      // navigation.navigate("Home"); // If you're using React Navigation
-
-    } catch (error) {
-      setLoading(false); // Stop loading
-      if (error.response) {
-        // Handle server-side errors
-        Alert.alert("Error", error.response.data.detail || "An error occurred.");
-      } else if (error.request) {
-        // Handle network errors
-        Alert.alert("Error", "Network error. Please try again.");
-      } else {
-        // Handle other errors
-        Alert.alert("Error", "Something went wrong. Please try again.");
-      }
+    if (result.success) {
+      // On success, show a success message and reset form
+      Toast.show({
+        type: 'success',
+        text1: 'Login Successful',
+        text2: 'You have logged in successfully!',
+      });
+    } else {
+      // Handle login failure (error message will be shown by the service)
     }
+
+    setLoading(false); // Reset loading state
   };
 
   return (
@@ -126,8 +95,11 @@ const SignIn = () => {
           </Text>
         </View>
       </ScrollView>
+      {/* Toast component to show messages */}
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </SafeAreaView>
   );
 };
 
 export default SignIn;
+

@@ -1,7 +1,7 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
-import toastr from "react-native-toastr";
+import { toast } from "react-toastify";
 
 // Base URL for API
 const BASE_URL = "https://intelligent-accessible-housing.onrender.com/api";
@@ -43,11 +43,11 @@ export const loginUser = async (identifier: string, password: string) => {
     const { access, refresh } = data;
     await storeTokens(access, refresh);
 
-    toastr.success(data?.detail || "Signed in successfully!");
+    toast.success(data?.detail || "Signed in successfully!");
 
     return { success: true, access, refresh };
   } catch (error: any) {
-    toastr.error(error.message || "Failed to sign in.");
+    toast.error(error.message || "Failed to sign in.");
     return { success: false };
   }
 };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SafeAreaView, Text, TextInput, TouchableOpacity, View, ScrollView } from "react-native";
 import { Link } from "expo-router";
 import { loginUser } from "@/services/api";
-import toastr from "react-native-toastr";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const [email, setEmail] = useState<string>("");
@@ -10,18 +10,18 @@ const SignIn = () => {
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      toastr.error("Please fill out both email and password.");
+      toast.error("Please fill out both email and password.");
       return;
     }
 
     // Call login API
     const { success } = await loginUser(email, password);
     if (success) {
-      toastr.success("Signed in successfully!");
+      toast.success("Signed in successfully!");
       // Optionally navigate to the next screen after successful login
       // e.g., navigation.navigate('Home');
     } else {
-      toastr.error("Failed to sign in.");
+      toast.error("Failed to sign in.");
     }
   };
 

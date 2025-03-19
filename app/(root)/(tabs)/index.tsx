@@ -18,8 +18,6 @@ export default function Index() {
   const [page, setPage] = useState<number>(1);
   const [greeting, setGreeting] = useState<string>(""); // Greeting message based on time of day
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // Track user login status
-  const [userName, setUserName] = useState<string>("N/A"); // Default to "N/A" if no name available
-  const [userImage, setUserImage] = useState<string | null>(""); // Default to null, which will show dummy image if not available
   const [loadingStatus, setLoadingStatus] = useState<boolean>(true); // Loading status for checking login
 
   // Function to get current time and set greeting
@@ -46,16 +44,11 @@ export default function Index() {
       }
 
       // Verify if token is valid by making a request
-      const response = await axios.get("https://intelligent-accessible-housing.onrender.com/api/verify_token/", {
+      await axios.get("https://intelligent-accessible-housing.onrender.com/api/verify_token/", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      // Fetch user details if token is valid
-      if (response.status === 200) {
-        setUserName(response.data.user.name || "N/A");
-        setUserImage(response.data.user.image || ""); // Set to empty string if no image
-        setIsLoggedIn(true);
-      }
+      setIsLoggedIn(true);
     } catch (error) {
       setIsLoggedIn(false);
       router.push("/sign-in");
@@ -117,13 +110,10 @@ export default function Index() {
           <View className="px-5">
             <View className="flex flex-row items-center justify-between mt-5">
               <View className="flex flex-row">
-                <Image
-                  source={userImage ? { uri: userImage } : images.avatar}
-                  className="w-12 h-12 rounded-full"
-                />
+                <Image source={images.avatar} className="w-12 h-12 rounded-full" />
                 <View className="flex flex-col ml-2">
                   <Text className="text-xs font-rubik text-black-100">{greeting}</Text>
-                  <Text className="text-base font-rubik-medium text-black-300">{userName}</Text>
+                  <Text className="text-base font-rubik-medium text-black-300">John Doe</Text>
                 </View>
               </View>
               <Image source={icons.bell} className="w-6 h-6" />

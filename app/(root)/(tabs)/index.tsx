@@ -18,8 +18,8 @@ export default function Index() {
   const [page, setPage] = useState<number>(1);
   const [greeting, setGreeting] = useState<string>(""); // Greeting message based on time of day
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // Track user login status
-  const [userName, setUserName] = useState<string>(""); // Store logged in user's name
-  const [userImage, setUserImage] = useState<string | null>(""); // Store logged in user's image
+  const [userName, setUserName] = useState<string>("N/A"); // Default to "N/A" if no name available
+  const [userImage, setUserImage] = useState<string | null>(""); // Default to null, which will show dummy image if not available
   const [loadingStatus, setLoadingStatus] = useState<boolean>(true); // Loading status for checking login
 
   // Function to get current time and set greeting
@@ -52,8 +52,8 @@ export default function Index() {
 
       // Fetch user details if token is valid
       if (response.status === 200) {
-        setUserName(response.data.user.name);
-        setUserImage(response.data.user.image);
+        setUserName(response.data.user.name || "N/A");
+        setUserImage(response.data.user.image || ""); // Set to empty string if no image
         setIsLoggedIn(true);
       }
     } catch (error) {

@@ -20,10 +20,14 @@ const Property = () => {
           `https://intelligent-accessible-housing.onrender.com/api/property/${id}/`
         );
         setProperty(response.data);
+
+        // Simulate loading time for at least 2 seconds
+        setTimeout(() => {
+          setLoading(false); // Stop loading after 2 seconds
+        }, 2000);
       } catch (error) {
         Alert.alert("Error", "Unable to fetch property data. Please try again.");
-      } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading on error
       }
     };
 

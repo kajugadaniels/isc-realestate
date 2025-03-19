@@ -8,6 +8,7 @@ import Search from "@/components/Search";
 import icons from "@/constants/icons";
 import images from "@/constants/images";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
   const router = useRouter();
@@ -15,6 +16,42 @@ export default function Index() {
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true); // To track if more properties are available
   const [page, setPage] = useState<number>(1);
+  const [user, setUser] = useState<any>(null); // To store user data
+  const [greeting, setGreeting] = useState<string>("");
+
+  // Function to check if the access token is valid
+  const checkUserAuth = async () => {
+    const token = await AsyncStorage.getItem("access_token");
+    if (!token) {
+      router.push("/sign-in");
+      return;
+    }
+
+    try {
+      const response = await axios.get("https://intelligent-accessible-housing.onrender.com/api/user/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Set user data
+      setUser(response.data);
+
+      // Determine the greeting based on the time of day
+      const hours = new Date().getHours();
+      if (hours < 12) {
+        setGreeting("Good Morning");
+      } else if (hours < 18) {
+        setGreeting("Good Afternoon");
+      } else {
+        setGreeting("Good Evening");
+      }
+
+    } catch (error) {
+      // If token is invalid or expired
+      router.push("/sign-in");
+    }
+  };
 
   // Function to load properties
   const loadProperties = async () => {
@@ -39,8 +76,9 @@ export default function Index() {
     }
   };
 
-  // Load initial properties on mount
+  // Load initial properties and check user authentication on mount
   useEffect(() => {
+    checkUserAuth();
     loadProperties();
   }, []);
 
@@ -63,10 +101,16 @@ export default function Index() {
           <View className="px-5">
             <View className="flex flex-row items-center justify-between mt-5">
               <View className="flex flex-row">
-                <Image source={images.avatar} className="w-12 h-12 rounded-full" />
+                {user?.image ? (
+                  <Image source={{ uri: user.image }} className="w-12 h-12 rounded-full" />
+                ) : (
+                  <Image source={images.avatar} className="w-12 h-12 rounded-full" />
+                )}
                 <View className="flex flex-col ml-2">
-                  <Text className="text-xs font-rubik text-black-100">Good Morning</Text>
-                  <Text className="text-base font-rubik-medium text-black-300">John Doe</Text>
+                  <Text className="text-xs font-rubik text-black-100">{greeting}</Text>
+                  <Text className="text-base font-rubik-medium text-black-300">{user?.name || "John Doe"}</Text>
+                  <Text className="text-xs font-rubik text-black-100">{user?.email || "Email not available"}</Text>
+                  <Text className="text-xs font-rubik text-black-100">{user?.phone_number || "Phone number not available"}</Text>
                 </View>
               </View>
               <Image source={icons.bell} className="w-6 h-6" />

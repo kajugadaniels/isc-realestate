@@ -28,6 +28,7 @@ export default function Index() {
     }
 
     try {
+      // Validate token by making a request to the backend
       const response = await axios.get("https://intelligent-accessible-housing.onrender.com/api/user/", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -48,7 +49,7 @@ export default function Index() {
       }
 
     } catch (error) {
-      // If token is invalid or expired
+      // If token is invalid or expired, redirect to sign-in
       router.push("/sign-in");
     }
   };

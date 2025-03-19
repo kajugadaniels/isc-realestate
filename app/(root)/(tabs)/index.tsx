@@ -14,42 +14,42 @@ export default function Index() {
   const router = useRouter();
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [hasMore, setHasMore] = useState<boolean>(true); // To track if more properties are available
   const [page, setPage] = useState<number>(1);
-  const [user, setUser] = useState<any>(null);
   const [greeting, setGreeting] = useState<string>("");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  // Function to check if the access token is valid
-  const checkUserAuth = async () => {
-    const token = await AsyncStorage.getItem("access_token");
-    if (!token) {
-      router.push("/sign-in");
-      return;
+  // Function to get current time and set greeting
+  const setGreetingMessage = () => {
+    const currentHour = new Date().getHours();
+    if (currentHour < 12) {
+      setGreeting("Good Morning");
+    } else if (currentHour < 18) {
+      setGreeting("Good Afternoon");
+    } else {
+      setGreeting("Good Evening");
     }
+  };
 
+  // Check if user is logged in and token is valid
+  const checkLoginStatus = async () => {
     try {
-      // Validate token by making a request to the backend
-      const response = await axios.get("https://intelligent-accessible-housing.onrender.com/api/user/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const token = await AsyncStorage.getItem("access_token");
 
-      // Set user data
-      setUser(response.data);
-
-      // Determine the greeting based on the time of day
-      const hours = new Date().getHours();
-      if (hours < 12) {
-        setGreeting("Good Morning");
-      } else if (hours < 18) {
-        setGreeting("Good Afternoon");
-      } else {
-        setGreeting("Good Evening");
+      if (!token) {
+        setIsLoggedIn(false);
+        router.push("/sign-in");
+        return;
       }
 
+      // Verify if token is valid by making a request
+      await axios.get("https://intelligent-accessible-housing.onrender.com/api/verify_token/", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setIsLoggedIn(true);
     } catch (error) {
-      // If token is invalid or expired, redirect to sign-in
+      setIsLoggedIn(false);
       router.push("/sign-in");
     }
   };
@@ -79,12 +79,18 @@ export default function Index() {
 
   // Load initial properties on mount
   useEffect(() => {
-    loadProperties();
+    setGreetingMessage(); // Set greeting based on time of the day
+    checkLoginStatus(); // Check if the user is logged in and the token is valid
+    loadProperties(); // Load the initial properties
   }, []);
 
   const handlePropertyPress = (id: number) => {
     router.push(`/properties/${id}`);
   };
+
+  if (isLoggedIn === null) {
+    return null; // Show loading state while checking login status
+  }
 
   return (
     <SafeAreaView className="h-full bg-white">

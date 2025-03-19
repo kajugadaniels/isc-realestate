@@ -16,8 +16,9 @@ export default function Index() {
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true); // To track if more properties are available
   const [page, setPage] = useState<number>(1);
-  const [greeting, setGreeting] = useState<string>("");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [greeting, setGreeting] = useState<string>(""); // Greeting message based on time of day
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // Track user login status
+  const [loadingStatus, setLoadingStatus] = useState<boolean>(true); // Loading status for checking login
 
   // Function to get current time and set greeting
   const setGreetingMessage = () => {
@@ -51,6 +52,8 @@ export default function Index() {
     } catch (error) {
       setIsLoggedIn(false);
       router.push("/sign-in");
+    } finally {
+      setLoadingStatus(false); // End loading check status
     }
   };
 
@@ -88,8 +91,8 @@ export default function Index() {
     router.push(`/properties/${id}`);
   };
 
-  if (isLoggedIn === null) {
-    return null; // Show loading state while checking login status
+  if (isLoggedIn === null || loadingStatus) {
+    return <Text>Loading...</Text>; // Show loading state while checking login status
   }
 
   return (

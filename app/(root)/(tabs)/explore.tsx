@@ -1,100 +1,84 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
-
-import icons from "@/constants/icons";
-import Search from "@/components/Search";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList, Text, TouchableOpacity, View, Image, Alert } from "react-native";
+import axios from "axios";
 import { Card } from "@/components/Cards";
+import Search from "@/components/Search";
+import icons from "@/constants/icons";
+import images from "@/constants/images";
+import { useRouter } from "expo-router";
 import Filters from "@/components/Filters";
-import NoResults from "@/components/NoResults";
 
-const Explore = () => {
-  const params = useLocalSearchParams<{ query?: string; filter?: string }>();
-
-  // Removed Appwrite hook. Using local state and dummy data instead.
+export default function Explore() {
+  const router = useRouter();
   const [properties, setProperties] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true); // To track if more properties are available
+  const [page, setPage] = useState<number>(2); // Start at page 2 since page 1 is loaded initially
 
-  useEffect(() => {
+  // Function to load properties
+  const loadProperties = async () => {
+    if (loading) return;
     setLoading(true);
-    // Simulate a data fetch. Replace this with your own fetching logic if needed.
-    setTimeout(() => {
-      // Dummy property data
-      setProperties([
-        {
-          $id: "1",
-          title: "Modern House in Suburb",
-          image: "https://example.com/property1.jpg",
-        },
-        {
-          $id: "2",
-          title: "Cozy Apartment Downtown",
-          image: "https://example.com/property2.jpg",
-        },
-      ]);
-      setLoading(false);
-    }, 1000);
-  }, [params.filter, params.query]);
+    try {
+      const response = await axios.get(
+        `https://intelligent-accessible-housing.onrender.com/api/properties/?page=${page}`
+      );
+      const newProperties = response.data;
 
-  const handleCardPress = (id: string) => router.push(`/properties/${id}`);
+      if (newProperties.length < 6) {
+        setHasMore(false); // No more properties to load
+      }
+
+      setProperties((prev) => [...prev, ...newProperties]);
+      setPage((prev) => prev + 1);
+    } catch (error) {
+      Alert.alert("Error", "Unable to load properties. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load initial properties on mount (12 properties)
+  useEffect(() => {
+    loadProperties();
+  }, []);
+
+  const handlePropertyPress = (id: number) => {
+    router.push(`/properties/${id}`);
+  };
 
   return (
     <SafeAreaView className="h-full bg-white">
       <FlatList
         data={properties}
-        numColumns={2}
         renderItem={({ item }) => (
-          <Card item={item} onPress={() => handleCardPress(item.$id)} />
+          <Card property={item} onPress={() => handlePropertyPress(item.id)} />
         )}
-        keyExtractor={(item) => item.$id}
-        contentContainerClassName="pb-32"
-        columnWrapperClassName="flex gap-5 px-5"
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          loading ? (
-            <ActivityIndicator size="large" className="text-primary-300 mt-5" />
-          ) : (
-            <NoResults />
-          )
-        }
-        ListHeaderComponent={() => (
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
+        contentContainerStyle={{ paddingBottom: 32 }}
+        columnWrapperStyle={{ flexDirection: "row", gap: 10, paddingHorizontal: 16 }}
+        ListHeaderComponent={
           <View className="px-5">
-            <View className="flex flex-row items-center justify-between mt-5">
-              <TouchableOpacity
-                onPress={() => router.back()}
-                className="flex flex-row bg-primary-200 rounded-full size-11 items-center justify-center"
-              >
-                <Image source={icons.backArrow} className="size-5" />
-              </TouchableOpacity>
-
-              <Text className="text-base mr-2 text-center font-rubik-medium text-black-300">
-                Search for Your Ideal Home
-              </Text>
-              <Image source={icons.bell} className="w-6 h-6" />
-            </View>
-
             <Search />
 
-            <View className="mt-5">
-              <Filters />
+            <Filters />
 
-              <Text className="text-xl font-rubik-bold text-black-300 mt-5">
-                Found {properties?.length} Properties
-              </Text>
+            <View className="my-5">
+              <Text className="text-xl font-rubik-bold text-black-300">Explore Properties</Text>
             </View>
           </View>
-        )}
+        }
+        ListFooterComponent={
+          hasMore && (
+            <TouchableOpacity onPress={loadProperties} className="py-3">
+              <Text className="text-center font-rubik-bold text-primary-300">Load More</Text>
+            </TouchableOpacity>
+          )
+        }
+        showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>
   );
-};
-
-export default Explore;
+}

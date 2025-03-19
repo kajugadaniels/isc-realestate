@@ -14,9 +14,9 @@ export default function Index() {
   const router = useRouter();
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [hasMore, setHasMore] = useState<boolean>(true); // To track if more properties are available
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
-  const [user, setUser] = useState<any>(null); // To store user data
+  const [user, setUser] = useState<any>(null);
   const [greeting, setGreeting] = useState<string>("");
 
   // Function to check if the access token is valid
@@ -77,9 +77,8 @@ export default function Index() {
     }
   };
 
-  // Load initial properties and check user authentication on mount
+  // Load initial properties on mount
   useEffect(() => {
-    checkUserAuth();
     loadProperties();
   }, []);
 
@@ -102,16 +101,10 @@ export default function Index() {
           <View className="px-5">
             <View className="flex flex-row items-center justify-between mt-5">
               <View className="flex flex-row">
-                {user?.image ? (
-                  <Image source={{ uri: user.image }} className="w-12 h-12 rounded-full" />
-                ) : (
-                  <Image source={images.avatar} className="w-12 h-12 rounded-full" />
-                )}
+                <Image source={images.avatar} className="w-12 h-12 rounded-full" />
                 <View className="flex flex-col ml-2">
                   <Text className="text-xs font-rubik text-black-100">{greeting}</Text>
-                  <Text className="text-base font-rubik-medium text-black-300">{user?.name || "John Doe"}</Text>
-                  <Text className="text-xs font-rubik text-black-100">{user?.email || "Email not available"}</Text>
-                  <Text className="text-xs font-rubik text-black-100">{user?.phone_number || "Phone number not available"}</Text>
+                  <Text className="text-base font-rubik-medium text-black-300">John Doe</Text>
                 </View>
               </View>
               <Image source={icons.bell} className="w-6 h-6" />

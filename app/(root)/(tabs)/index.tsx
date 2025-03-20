@@ -149,7 +149,7 @@ export default function Index() {
               <Text className="text-xl font-rubik-bold text-black-300">Featured</Text>
               <FlatList
                 data={randomProperties} // Display the random properties here
-                renderItem={({ item }) => <FeaturedCard />}
+                renderItem={({ item }) => <FeaturedCard property={item} />}
                 keyExtractor={(item) => item.id.toString()}
                 horizontal
                 showsHorizontalScrollIndicator={false}

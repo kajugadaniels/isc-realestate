@@ -92,7 +92,11 @@ export default function Index() {
   };
 
   if (isLoggedIn === null || loadingStatus) {
-    return <Text>Loading...</Text>; // Show loading state while checking login status
+    return (
+      <SafeAreaView className="h-full bg-white">
+        <Text>Loading...</Text>
+      </SafeAreaView>
+    );
   }
 
   return (

@@ -9,6 +9,8 @@ interface CardProps {
 }
 
 export const Card = ({ property, onPress }: CardProps) => {
+  const truncatedName = property.name.length > 10 ? property.name.substring(0, 20) + "..." : property.name;
+
   return (
     <TouchableOpacity onPress={onPress} className="relative flex flex-col items-start h-64 w-44">
       <Image source={{ uri: property.image }} className="w-full h-40 rounded-lg" />
@@ -18,7 +20,7 @@ export const Card = ({ property, onPress }: CardProps) => {
       </View>
 
       <View className="flex flex-col mt-2">
-        <Text className="text-base font-rubik-bold text-black-300">{property.name}</Text>
+        <Text className="text-base font-rubik-bold text-black-300">{truncatedName}</Text>
         <Text className="text-xs font-rubik text-black-100">{property.city}</Text>
 
         <View className="flex flex-row items-center justify-between mt-2">

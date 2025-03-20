@@ -133,7 +133,7 @@ export default function Index() {
             <View className="flex flex-row items-center justify-between mt-5">
               <View className="flex flex-row">
                 <Image
-                  source={userImage ? { uri: userImage } : images.dummyAvatar} // Use dummyAvatar if no user image
+                  source={images.avatar}
                   className="w-12 h-12 rounded-full"
                 />
                 <View className="flex flex-col ml-2">

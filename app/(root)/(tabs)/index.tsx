@@ -106,7 +106,10 @@ export default function Index() {
   }, []);
 
   const handlePropertyPress = (id: number) => {
-    router.push(`/properties/${id}`);
+    router.push({
+      pathname: "/properties/[id]",
+      params: { id: id.toString() },
+    });
   };
 
   if (isLoggedIn === null || loadingStatus) {
